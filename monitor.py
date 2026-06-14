@@ -16,7 +16,7 @@ def get_page_content_and_screenshot():
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1280, "height": 900})
-        page.goto(URL, wait_until="networkidle", timeout=30000)
+        page.goto(URL, wait_until="domcontentloaded", timeout=30000)
         page.wait_for_timeout(3000)  # Warten bis JS fertig gerendert hat
         content = page.inner_text("body")
         page.screenshot(path=SCREENSHOT_FILE, full_page=False)
