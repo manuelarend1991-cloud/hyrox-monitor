@@ -18,8 +18,28 @@ def get_page_content_and_screenshot():
         page = browser.new_page(viewport={"width": 1280, "height": 900})
         page.goto(URL, wait_until="domcontentloaded", timeout=30000)
         page.wait_for_timeout(3000)  # Warten bis JS fertig gerendert hat
+
+        # Cookie-Banner wegklicken (verschiedene mögliche Texte/Selektoren)
+        for selector in [
+            "button:has-text('Akzeptieren')",
+            "button:has-text('Alle akzeptieren')",
+            "button:has-text('Accept all')",
+            "button:has-text('Accept')",
+            "button:has-text('Zustimmen')",
+            "[id*='cookie'] button",
+            "[class*='cookie'] button",
+            "[class*='consent'] button",
+        ]:
+            try:
+                page.click(selector, timeout=1500)
+                page.wait_for_timeout(500)
+                break
+            except Exception:
+                pass
+
+        page.wait_for_timeout(1000)
         content = page.inner_text("body")
-        page.screenshot(path=SCREENSHOT_FILE, full_page=False)
+        page.screenshot(path=SCREENSHOT_FILE, full_page=True)
         browser.close()
     return content
 
